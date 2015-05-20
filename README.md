@@ -1,2 +1,0 @@
-# essential
-essential project GIG
