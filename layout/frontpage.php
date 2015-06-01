@@ -35,6 +35,8 @@ if ($enable1alert || $enable2alert || $enable3alert) {
     $alerterror = '<span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-warning fa-stack-1x fa-inverse"></i></span>';
     $alertsuccess = '<span class="fa-stack"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-bullhorn fa-stack-1x fa-inverse"></i></span>';
 }
+
+
 ?>
 
 <div id="page" class="container-fluid">
@@ -197,45 +199,44 @@ if ($enable1alert || $enable2alert || $enable3alert) {
 get_user_courses_bycap($USER->id, 'mod/assign:addinstance', $accessdata_ignored, $doanything_ignored);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 ?>
+
 <style>
 <!--
-.rojo { background-color: red; }
+.rojo { background-color: yellow; }
 .verde { background-color: green; }
 -->
 </style>
-<script type = "text/javascript">
-var cursos = [
-              <?php 
-              echo '{name:"Contabilidad I", clase:"rojo"},';
-              echo '{name:"Derecho I", clase:"verde"},';
-?>];
 
- YUI().use('node','event-mouseenter', function(Y){
+<script type = "text/javascript">
+
+ 
+   YUI().use('node','event-mouseenter', function(Y){
 
 	 function onClickViewMore(e){
 		 var n = e.target.ancestor('.coursebox');
 		 n.one('.teachers').toggleView();
 	 }
 
-	 teachersNodes = Y.all('.coursebox');
-	 teachersNodes.each(function (teacherNode){
-		 for(var curso in cursos) {
-			 //alert(cursos['name']);
-			 if(cursos.name == teacherNode.one('.coursename').one('a').getHTML()) {
-		 		alert(cursos.clase);
-			 }
-		 }
-		 teacherNode.addClass('rojo');
-		 if(teacherNode.all('.info').size()>0){
+	 	teachersNodes = Y.all('.coursebox');
+
+		 teachersNodes.each(function (teacherNode){
+
+			 
+			 if(teacherNode.all('.info').size()>0){
 			 var node = Y.Node.create('<div class="openteachers"><a href = "#"><img src="<?php echo $CFG->wwwroot?>/pix/i/admin.gif"></a></div>');
-					 
-					 node.on('click',onClickViewMore);
+							 
+				 node.on('click',onClickViewMore);
 							 teacherNode.one('.info').insert(node,1);
+							 teacherNode.addClass('rojo');
 		 }
 	 });
 					 Y.all('.teachers').hide();
- });
+ }); 
 </script>
+
  </body>
 </html>
