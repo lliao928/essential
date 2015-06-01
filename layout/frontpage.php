@@ -196,15 +196,20 @@ if ($enable1alert || $enable2alert || $enable3alert) {
 
 get_user_courses_bycap($USER->id, 'mod/assign:addinstance', $accessdata_ignored, $doanything_ignored);
 
+////////////////////////////////////////////////////////////////////////////////////////////////
 ?>
 <style>
 <!--
 .rojo { background-color: red; }
+.verde { background-color: green; }
 -->
 </style>
 <script type = "text/javascript">
-var cursos = [];
-cursos.push('rojo');
+var cursos = [
+              <?php 
+              echo '{name:"Contabilidad I", clase:"rojo"},';
+              echo '{name:"Derecho I", clase:"verde"},';
+?>];
 
  YUI().use('node','event-mouseenter', function(Y){
 
@@ -215,6 +220,12 @@ cursos.push('rojo');
 
 	 teachersNodes = Y.all('.coursebox');
 	 teachersNodes.each(function (teacherNode){
+		 for(var curso in cursos) {
+			 //alert(cursos['name']);
+			 if(cursos.name == teacherNode.one('.coursename').one('a').getHTML()) {
+		 		alert(cursos.clase);
+			 }
+		 }
 		 teacherNode.addClass('rojo');
 		 if(teacherNode.all('.info').size()>0){
 			 var node = Y.Node.create('<div class="openteachers"><a href = "#"><img src="<?php echo $CFG->wwwroot?>/pix/i/admin.gif"></a></div>');
@@ -226,5 +237,5 @@ cursos.push('rojo');
 					 Y.all('.teachers').hide();
  });
 </script>
-</body>
+ </body>
 </html>
