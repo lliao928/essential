@@ -39,6 +39,16 @@ if ($enable1alert || $enable2alert || $enable3alert) {
 
 ?>
 
+<?php /////////////////////?>
+
+<form>
+<div align="center">
+  <input type="button" value="Cambiar Color" name="Back2" onclick="history.back()" />
+  </div>
+ </form>
+ 
+<?php ////////////////////////////////////////////////////?>
+
 <div id="page" class="container-fluid">
     <section class="slideshow">
         <!-- Start Slideshow -->
@@ -55,6 +65,8 @@ if ($enable1alert || $enable2alert || $enable3alert) {
         <!-- End Slideshow -->
     </section>
 
+    
+    
     <section role="main-content">
         <!-- Start Main Regions -->
 
@@ -72,6 +84,7 @@ if ($enable1alert || $enable2alert || $enable3alert) {
 
         <!-- Alert #2 -->
         <?php if ($enable2alert) { ?>
+
             <div class="useralerts alert alert-<?php echo $OUTPUT->get_setting('alert2type'); ?>">
                 <a class="close" data-dismiss="alert" href="#"><i class="fa fa-times-circle"></i></a>
                 <?php
@@ -110,6 +123,9 @@ if ($enable1alert || $enable2alert || $enable3alert) {
                 break;
         }
         if ($showfrontcontent) { ?>
+        
+  
+        
             <div class="frontpagecontent">
                 <div class="bor"></div>
                 <?php
@@ -186,6 +202,7 @@ if ($enable1alert || $enable2alert || $enable3alert) {
     </section>
 </div>
 
+
 <?php require_once($OUTPUT->get_include_file('footer')); ?>
 
 <!-- Initialize slideshow -->
@@ -199,10 +216,40 @@ if ($enable1alert || $enable2alert || $enable3alert) {
 get_user_courses_bycap($USER->id, 'mod/assign:addinstance', $accessdata_ignored, $doanything_ignored);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
+//busqueda de las variables principales, es decir, el rol de cada persona, ya sea profesor, alumnos, ayudante o visita
+//para luego llamarlo en la siguiente funcion
 
+$courses=enrol_get_users_courses($USER->id);
 
-
+foreach ($courses as $course){
+	$isTeacher=false;
+	$isStudent=false;
+	$context_course=get_context_instance(CONTEXT_COURSE,$course->id,true);
+	$roles=get_user_roles($context_course,$USER->id);
+	var_dump($roles);
+	foreach($roles as $role){
+		if($role->shortname=="editingteacher"){
+				
+			$isTeacher=true;
+		}
+	}	
+	if($isTeacher){
+echo "HOLA";
+//echo '<body style="background-color:white">';
+	}
+	elseif($isStudent){
+		echo"CHAO";
+	}
+}
+/*<form>
+<div>
+<input type="button" value="color" name="Back2" onclick="body style="background-color:yellow" /></div>;
+ 	</form>
+ 			*/
 ?>
+
+    
+<?php //definicion de los colores de los coursebox?>
 
 <style>
 <!--
@@ -211,9 +258,48 @@ get_user_courses_bycap($USER->id, 'mod/assign:addinstance', $accessdata_ignored,
 -->
 </style>
 
-<script type = "text/javascript">
 
  
+<script type = "text/javascript"> 
+
+var cursos = [
+              <?php
+//cambio de color de los coursebox dependiendo el rol de cada uno en el curso 
+$courses=enrol_get_users_courses($USER->id);
+
+foreach ($courses as $course){
+$isTeacher=false;
+$isStudent=false;
+$context_course=get_context_instance(CONTEXT_COURSE,$course->id,true);
+$roles=get_user_roles($context_course,$USER->id);
+//var_dump($roles);
+foreach($roles as $role){
+if($role->shortname=="editingteacher"){
+
+$isTeacher=true;			
+}
+elseif($role->shortname=="student"){
+$isStudent=true;
+}
+}	
+if($isTeacher){
+
+// echo '<center>"Hola Profesor '.$USER->firstname.'"</center>';
+echo '["'.$course->fullname.'", "rojo"],';
+//echo '<body style="background-color:white">';
+}
+elseif($isStudent){
+// echo '<center>"Hola '.$USER->firstname.'"</center>';
+echo '["'.$course->fullname.'", "verde"],';
+} else {
+	echo '["'.$course->fullname.'", "azul"],';
+	
+}} 
+////////////////////////////////7  
+              /* echo '{name:"Contabilidad I", clase:"rojo"},';
+              echo '{name:"Derecho I", clase:"verde"},'; */
+ ?>];
+
    YUI().use('node','event-mouseenter', function(Y){
 
 	 function onClickViewMore(e){
@@ -224,19 +310,26 @@ get_user_courses_bycap($USER->id, 'mod/assign:addinstance', $accessdata_ignored,
 	 	teachersNodes = Y.all('.coursebox');
 
 		 teachersNodes.each(function (teacherNode){
+			 // alert(teacherNode.one('.coursename').one('a').getHTML());
+		 for(var i=0;i<cursos.length;i++) {
+				 if(cursos[i][0] == teacherNode.one('.coursename').one('a').getHTML()) {
+					// alert(cursos[i][0] + ',' + cursos[i][1]);
+					 teacherNode.addClass(cursos[i][1]);
+				}
+			 }
 
-			 
 			 if(teacherNode.all('.info').size()>0){
 			 var node = Y.Node.create('<div class="openteachers"><a href = "#"><img src="<?php echo $CFG->wwwroot?>/pix/i/admin.gif"></a></div>');
 							 
 				 node.on('click',onClickViewMore);
 							 teacherNode.one('.info').insert(node,1);
-							 teacherNode.addClass('rojo');
 		 }
 	 });
 					 Y.all('.teachers').hide();
- }); 
+ });    
 </script>
+
+
 
  </body>
 </html>
